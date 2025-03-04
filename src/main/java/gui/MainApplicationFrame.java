@@ -164,24 +164,15 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private JMenu generateDocumentMenu(){
-        JMenu menu = new JMenu("Document");
+        JMenu menu = new JMenu("Приложение");
         menu.setMnemonic(KeyEvent.VK_D);
-        menu.add(createAddDocumentButton());
         menu.add(createQuitButton());
         return menu;
     }
 
-    private JMenuItem createAddDocumentButton(){
-        JMenuItem menuItem = new JMenuItem("New");
-        menuItem.setMnemonic(KeyEvent.VK_N);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-        menuItem.setActionCommand("new");
-        return menuItem;
-    }
 
     private JMenuItem createQuitButton(){
-        JMenuItem menuItem = new JMenuItem("Quit");
+        JMenuItem menuItem = new JMenuItem("Выход");
         menuItem.setMnemonic(KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, ActionEvent.ALT_MASK));
