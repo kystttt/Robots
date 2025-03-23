@@ -4,14 +4,22 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import javax.swing.*;
 
 import log.Logger;
 
-
-public class MainApplicationFrame extends JFrame {
+public class MainApplicationFrame extends JFrame implements WindowAction {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final WindowSaver windowSaver = new WindowSaver(new HashMap<>(), new HashSet<>());
+    private LogWindow logWindow;
+    private GameWindow gameWindow;
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -20,50 +28,95 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
+        try {
+            windowSaver.loadFromFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        LogWindow logWindow = createLogWindow();
+        logWindow = createLogWindow();
         addWindow(logWindow);
+        windowSaver.registerWindow(logWindow.getNameOfWindow());
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
+        gameWindow = new GameWindow();
         addWindow(gameWindow);
+        windowSaver.registerWindow(gameWindow.getNameOfWindow());
+
+        windowSaver.registerWindow(this.getNameOfWindow());
+
+        loadWindowState(windowSaver.getWindowParams());
 
         setJMenuBar(createMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
+            public void windowClosing(WindowEvent e) {
                 quit();
             }
         });
     }
 
-    /**
-     * Создает и настраивает окно логов
-     *
-     * @return возвращает настроенный экземпляр
-     */
+    @Override
+    public Map<String, Integer> saveWindowState() {
+        Map<String, Integer> state = new HashMap<>();
+        state.put("x", getLocation().x);
+        state.put("y", getLocation().y);
+        state.put("width", getWidth());
+        state.put("height", getHeight());
+        state.put("state", getExtendedState());
+        return state;
+    }
+
+    @Override
+    public void loadWindowState(Map<String, Integer> params) {
+        if (params != null) {
+            Integer x = params.get("x");
+            Integer y = params.get("y");
+            Integer width = params.get("width");
+            Integer height = params.get("height");
+            Integer state = params.get("state");
+
+            if (x != null && y != null) {
+                setLocation(x, y);
+            }
+            if (width != null && height != null) {
+                setSize(width, height);
+            }
+            if (state != null) {
+                setExtendedState(state);
+            }
+        }
+
+        // Восстанавливаем состояние окон
+        windowSaver.setWindowParams(logWindow);
+        windowSaver.setWindowParams(gameWindow);
+    }
+
+    @Override
+    public String getNameOfWindow() {
+        return "MainApplicationFrame";
+    }
+
+    private void saveWindowStateBeforeExit() {
+        windowSaver.saveWindowParams(this);
+        windowSaver.saveWindowParams(logWindow);
+        windowSaver.saveWindowParams(gameWindow);
+    }
+
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);//300
+        logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
 
-    /**
-     * Добавляет окно
-     *
-     *
-     * @param frame
-     */
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
-
 
     protected JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -74,29 +127,15 @@ public class MainApplicationFrame extends JFrame {
         return menuBar;
     }
 
-    /**
-     * Выпадающая кнопка "Режим отображения" на основной полоске приложения
-     *
-     * @return возвращает готовый экземпляр
-     */
     private JMenu generateLookAndFeelMenu() {
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext()
-                .setAccessibleDescription(
-                        "Управление режимом отображения приложения");
+        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
         lookAndFeelMenu.add(createSystemLookAndFeelMenuButton());
         lookAndFeelMenu.add(createCrossPlatformLookAndFeelMenuButton());
         return lookAndFeelMenu;
     }
 
-
-    /**
-     * Создает кнопку "Системная схема" в менюшке
-     * "управление режима отображения", которая меняет оформление
-     * приложения на системное
-     * @return возвращает готовый экземпляр
-     */
     private JMenuItem createSystemLookAndFeelMenuButton() {
         JMenuItem systemLookAndFeelMenu = new JMenuItem("Системная схема", KeyEvent.VK_S);
         systemLookAndFeelMenu.addActionListener((event) -> {
@@ -106,16 +145,8 @@ public class MainApplicationFrame extends JFrame {
         return systemLookAndFeelMenu;
     }
 
-
-    /**
-     *Создает кнопку "Универсальная схема" в менюшке
-     * "управление режима отображения", которая меняет оформление
-     * приложения на белое
-     * @return возвращает готовый экземпляр
-     */
     private JMenuItem createCrossPlatformLookAndFeelMenuButton() {
-        JMenuItem crossplatformLookAndMenuButton = new JMenuItem(
-                "Универсальная схема", KeyEvent.VK_S);
+        JMenuItem crossplatformLookAndMenuButton = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
         crossplatformLookAndMenuButton.addActionListener((event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
@@ -123,59 +154,42 @@ public class MainApplicationFrame extends JFrame {
         return crossplatformLookAndMenuButton;
     }
 
-
-    /**
-     * Создает выпадающую кнопку "Тесты" в основном баре
-     * приложения
-     * @return готовый экземпляр
-     */
-    private JMenu generateTestMenu(){
+    private JMenu generateTestMenu() {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
+        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
         testMenu.add(createAddLogMessageButton());
         return testMenu;
     }
 
-
-    /**
-     * Создает кнопку "Сообщение в лог" в менюшке "Тесты"
-     * @return готовый экземпляр
-     */
-    private JMenuItem createAddLogMessageButton(){
-        JMenuItem addLogMessageButton = new JMenuItem(
-                "Сообщение в лог", KeyEvent.VK_S);
+    private JMenuItem createAddLogMessageButton() {
+        JMenuItem addLogMessageButton = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
         addLogMessageButton.addActionListener((event) -> {
             Logger.debug("Новая строка");
         });
         return addLogMessageButton;
     }
 
-
     private void setLookAndFeel(String className) {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             // just ignore
         }
     }
 
-    private JMenu generateDocumentMenu(){
+    private JMenu generateDocumentMenu() {
         JMenu menu = new JMenu("Приложение");
         menu.setMnemonic(KeyEvent.VK_D);
         menu.add(createQuitButton());
         return menu;
     }
 
-
-    private JMenuItem createQuitButton(){
+    private JMenuItem createQuitButton() {
         JMenuItem menuItem = new JMenuItem("Выход");
         menuItem.setMnemonic(KeyEvent.VK_Q);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.setActionCommand("quit");
 
         menuItem.addActionListener((event) -> quit());
@@ -183,9 +197,6 @@ public class MainApplicationFrame extends JFrame {
         return menuItem;
     }
 
-    /**
-     * Окошко подтверждения выхода и закрытия приложения
-     */
     private void quit() {
         int response = JOptionPane.showConfirmDialog(
                 this,
@@ -196,6 +207,12 @@ public class MainApplicationFrame extends JFrame {
         );
 
         if (response == JOptionPane.YES_OPTION) {
+            saveWindowStateBeforeExit();
+            try {
+                windowSaver.saveToFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.exit(0);
         }
     }
