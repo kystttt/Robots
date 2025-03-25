@@ -45,7 +45,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         windowSaver.registerWindow(gameWindow.getNameOfWindow());
 
         windowSaver.registerWindow(this.getNameOfWindow());
-
         loadWindowState(windowSaver.getWindowParams());
 
         setJMenuBar(createMenuBar());
@@ -66,6 +65,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         state.put("width", getWidth());
         state.put("height", getHeight());
         state.put("state", getExtendedState());
+
         return state;
     }
 
@@ -88,8 +88,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
                 setExtendedState(state);
             }
         }
-
-        // Восстанавливаем состояние окон
         windowSaver.setWindowParams(logWindow);
         windowSaver.setWindowParams(gameWindow);
     }
