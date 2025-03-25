@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import state.WindowAction;
 
 import static java.awt.Frame.ICONIFIED;
 import static java.awt.Frame.NORMAL;

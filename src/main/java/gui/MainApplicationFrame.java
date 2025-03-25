@@ -14,6 +14,8 @@ import java.util.Map;
 import javax.swing.*;
 
 import log.Logger;
+import state.WindowAction;
+import state.WindowSaver;
 
 public class MainApplicationFrame extends JFrame implements WindowAction {
     private final JDesktopPane desktopPane = new JDesktopPane();

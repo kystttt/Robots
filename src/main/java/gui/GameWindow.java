@@ -1,4 +1,6 @@
 package gui;
+import state.WindowAction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
