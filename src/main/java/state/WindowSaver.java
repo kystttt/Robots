@@ -59,7 +59,7 @@ public class WindowSaver {
      * не делает
      */
     public void saveToFile() throws IOException {
-        File configDir = new File(System.getProperty("user.home") + "/sevostianov/");
+        File configDir = new File(System.getProperty("user.home") + File.separator + "sevostianov");
         if (!configDir.exists()) {
             configDir.mkdirs();
         }
