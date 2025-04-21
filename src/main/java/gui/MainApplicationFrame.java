@@ -22,6 +22,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     private final WindowSaver windowSaver = new WindowSaver(new HashMap<>(), new HashSet<>());
     private LogWindow logWindow;
     private GameWindow gameWindow;
+    private RobotPositionWindow robotPositionWindow;
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -44,8 +45,17 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         addWindow(gameWindow);
         windowSaver.registerWindow(gameWindow.getNameOfWindow());
 
+        robotPositionWindow = new RobotPositionWindow(gameWindow.model);
+        addWindow(robotPositionWindow);
+        windowSaver.registerWindow(robotPositionWindow.getNameOfWindow());
+
         windowSaver.registerWindow(this.getNameOfWindow());
         loadWindowState(windowSaver.getWindowParams());
+
+        windowSaver.registerWindow(this.getNameOfWindow());
+        loadWindowState(windowSaver.getWindowParams());
+
+
 
         setJMenuBar(createMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -90,6 +100,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         }
         windowSaver.setWindowParams(logWindow);
         windowSaver.setWindowParams(gameWindow);
+        windowSaver.setWindowParams(robotPositionWindow);
     }
 
     @Override
@@ -101,6 +112,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         windowSaver.saveWindowParams(this);
         windowSaver.saveWindowParams(logWindow);
         windowSaver.saveWindowParams(gameWindow);
+        windowSaver.saveWindowParams(robotPositionWindow);
     }
 
     protected LogWindow createLogWindow() {

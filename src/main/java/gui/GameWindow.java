@@ -1,18 +1,26 @@
 package gui;
+
+import game.GameController;
+import game.GameVisualizer;
+import game.RobotModel;
 import state.WindowAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+
 import static java.awt.Frame.ICONIFIED;
 import static java.awt.Frame.NORMAL;
 
 public class GameWindow extends JInternalFrame implements WindowAction {
     private final GameVisualizer m_visualizer;
+    public final RobotModel model;
 public GameWindow() {
     super("Игровое поле", true, true, true, true);
-    m_visualizer = new GameVisualizer();
+    model = new RobotModel();
+    m_visualizer = new GameVisualizer(model);
+    new GameController(model, m_visualizer);
 
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(m_visualizer, BorderLayout.CENTER);
