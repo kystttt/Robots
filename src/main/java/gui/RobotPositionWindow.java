@@ -7,31 +7,39 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Map;
 
-public class RobotPositionWindow extends JInternalFrame implements WindowAction, PropertyChangeListener {
+/**
+ *Окно с текущей позицией робота(координаты)
+ * Реагирует на изменения позиции робота через механизм PropertyChangeListener
+ */
+public class RobotPositionWindow extends BaseWindow implements WindowAction, PropertyChangeListener {
     private final JTextArea textArea;
 
     public RobotPositionWindow(RobotModel model) {
-        super("Информация", true, true, true, true);
+        super("Информация", 300, 200, 100, 100);
         textArea = new JTextArea();
         textArea.setEditable(false);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
-
-        setSize(300, 200);
-        setLocation(100, 100);
-        setVisible(true);
         pack();
-
         model.addPropertyChangeListener(this);
         updateText(model.getX(), model.getY());
     }
 
+    /**
+     * Показывает координаты
+     * @param x
+     * @param y
+     */
     private void updateText(double x, double y) {
         textArea.setText(String.format("Координаты робота:\nX: %.2f\nY: %.2f", x, y));
     }
 
+    /**
+     *Обрабатывает событие изменения координат робота,
+     *при получении события с именем "position" обновляет отображение координат
+     * @param evt Объект PropertyChangeEvent, описывающий источник события
+     *и свойство, которое изменилось.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("position".equals(evt.getPropertyName())) {
@@ -43,24 +51,5 @@ public class RobotPositionWindow extends JInternalFrame implements WindowAction,
     @Override
     public String getNameOfWindow() {
         return "RobotPositionWindow";
-    }
-
-    @Override
-    public Map<String, Integer> saveWindowState() {
-        Map<String, Integer> state = new HashMap<>();
-        state.put("x", getX());
-        state.put("y", getY());
-        state.put("width", getWidth());
-        state.put("height", getHeight());
-        return state;
-    }
-
-    @Override
-    public void loadWindowState(Map<String, Integer> params) {
-        int x = params.getOrDefault("x", 100);
-        int y = params.getOrDefault("y", 100);
-        int width = params.getOrDefault("width", 300);
-        int height = params.getOrDefault("height", 200);
-        setBounds(x, y, width, height);
     }
 }

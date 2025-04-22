@@ -7,6 +7,9 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Рисует робота и точку, после клика мышью
+ */
 public class GameVisualizer extends JPanel implements PropertyChangeListener {
     private final RobotModel model;
 
@@ -22,6 +25,10 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         timer.start();
     }
 
+    /**
+     * Рисует текущие координаты робота и точку цели
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -29,9 +36,16 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         drawTarget(g, model.getTargetX(), model.getTargetY());
     }
 
+    /**
+     * Рисует модельку робота и указатель направления
+     * @param g
+     * @param x
+     * @param y
+     * @param direction
+     */
     private void drawRobot(Graphics g, double x, double y, double direction) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.PINK);
         int centerX = (int) x;
         int centerY = (int) y;
         g2d.fillOval(centerX - 10, centerY - 10, 40, 10);
@@ -44,6 +58,12 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         g2d.fillOval(directionX - circleSize / 2, directionY - circleSize / 2, circleSize, circleSize);
     }
 
+    /**
+     * Рисует точку(цель), оставленную игроком
+     * @param g
+     * @param targetX
+     * @param targetY
+     */
     private void drawTarget(Graphics g, double targetX, double targetY) {
         g.setColor(Color.GREEN);
         int targetCenterX = (int) targetX;
@@ -52,6 +72,12 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         g.fillOval(targetCenterX - 5, targetCenterY - 5, 10, 10);
     }
 
+    /**
+     * Обрабатывает событие изменения свойств модели,
+     * перерисовывает модель при изменении
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         repaint();

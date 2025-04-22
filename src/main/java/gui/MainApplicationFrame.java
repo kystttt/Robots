@@ -37,10 +37,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
             e.printStackTrace();
         }
 
-        logWindow = createLogWindow();
-        addWindow(logWindow);
-        windowSaver.registerWindow(logWindow.getNameOfWindow());
-
         gameWindow = new GameWindow();
         addWindow(gameWindow);
         windowSaver.registerWindow(gameWindow.getNameOfWindow());
@@ -49,13 +45,16 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         addWindow(robotPositionWindow);
         windowSaver.registerWindow(robotPositionWindow.getNameOfWindow());
 
-        windowSaver.registerWindow(this.getNameOfWindow());
-        loadWindowState(windowSaver.getWindowParams());
+        logWindow = createLogWindow();
+        addWindow(logWindow);
+        windowSaver.registerWindow(logWindow.getNameOfWindow());
 
         windowSaver.registerWindow(this.getNameOfWindow());
-        loadWindowState(windowSaver.getWindowParams());
 
-
+        windowSaver.setWindowParams(this);
+        windowSaver.setWindowParams(logWindow);
+        windowSaver.setWindowParams(gameWindow);
+        windowSaver.setWindowParams(robotPositionWindow);
 
         setJMenuBar(createMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -75,7 +74,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         state.put("width", getWidth());
         state.put("height", getHeight());
         state.put("state", getExtendedState());
-
         return state;
     }
 
@@ -98,9 +96,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
                 setExtendedState(state);
             }
         }
-        windowSaver.setWindowParams(logWindow);
-        windowSaver.setWindowParams(gameWindow);
-        windowSaver.setWindowParams(robotPositionWindow);
     }
 
     @Override
@@ -135,7 +130,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         menuBar.add(generateLookAndFeelMenu());
         menuBar.add(generateTestMenu());
         menuBar.add(generateDocumentMenu());
-
         return menuBar;
     }
 
@@ -150,7 +144,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
 
     private JMenuItem createSystemLookAndFeelMenuButton() {
         JMenuItem systemLookAndFeelMenu = new JMenuItem("Системная схема", KeyEvent.VK_S);
-        systemLookAndFeelMenu.addActionListener((event) -> {
+        systemLookAndFeelMenu.addActionListener(event -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
         });
@@ -158,8 +152,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createCrossPlatformLookAndFeelMenuButton() {
-        JMenuItem crossplatformLookAndMenuButton = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-        crossplatformLookAndMenuButton.addActionListener((event) -> {
+        JMenuItem crossplatformLookAndMenuButton = new JMenuItem("Универсальная схема", KeyEvent.VK_U);
+        crossplatformLookAndMenuButton.addActionListener(event -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
         });
@@ -175,10 +169,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createAddLogMessageButton() {
-        JMenuItem addLogMessageButton = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageButton.addActionListener((event) -> {
-            Logger.debug("Новая строка");
-        });
+        JMenuItem addLogMessageButton = new JMenuItem("Сообщение в лог", KeyEvent.VK_L);
+        addLogMessageButton.addActionListener(event -> Logger.debug("Новая строка"));
         return addLogMessageButton;
     }
 
@@ -186,8 +178,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // just ignore
+        } catch (Exception e) {
+            // просто игнор
         }
     }
 
@@ -203,17 +195,15 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         menuItem.setMnemonic(KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.setActionCommand("quit");
-
-        menuItem.addActionListener((event) -> quit());
-
+        menuItem.addActionListener(event -> quit());
         return menuItem;
     }
 
     private void quit() {
         int response = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure you want to exit?",
-                "Confirm Exit",
+                "Вы уверены, что хотите выйти?",
+                "Подтвердите выход",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );

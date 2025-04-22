@@ -2,7 +2,10 @@ package game;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
+/**
+ * Модель робота, которая хранит его текущее положение, направление и цель движения.
+ * Также реализует механизм оповещения слушателей об изменениях положения и цели.
+ */
 public class RobotModel {
     private double x = 100;
     private double y = 100;
@@ -13,10 +16,17 @@ public class RobotModel {
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+    /**
+     * Добавляет слушателя изменений свойств модели
+     * @param listener
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
+    /**
+     * Обновляет положение робота
+     */
     public void updateRobotPosition() {
         double distance = distanceToTarget();
         if (distance < 0.5) {
