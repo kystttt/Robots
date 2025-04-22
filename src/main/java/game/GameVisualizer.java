@@ -18,11 +18,7 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         model.addPropertyChangeListener(this);
         setDoubleBuffered(true);
 
-        Timer timer = new Timer(50, e -> {
-            model.updateRobotPosition();
-            repaint();
-        });
-        timer.start();
+
     }
 
     /**

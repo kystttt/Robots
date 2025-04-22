@@ -1,5 +1,6 @@
 package game;
 
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,6 +14,10 @@ public class GameController extends MouseAdapter {
     public GameController(RobotModel model, GameVisualizer view) {
         this.model = model;
         view.addMouseListener(this);
+        Timer timer = new Timer(50, e -> {
+            model.updateRobotPosition();
+        });
+        timer.start();
     }
 
     /**
