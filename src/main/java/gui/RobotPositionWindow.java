@@ -1,6 +1,7 @@
 package gui;
 
 import game.RobotModel;
+import localization.LocaleManager;
 import state.WindowAction;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
     private final JTextArea textArea;
 
     public RobotPositionWindow(RobotModel model) {
-        super("Информация", 300, 200, 100, 100);
+        super(LocaleManager.getInstance().getString("robot.position.title"), 300, 200, 100, 100);
         textArea = new JTextArea();
         textArea.setEditable(false);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
@@ -25,13 +26,19 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
         updateText(model.getX(), model.getY());
     }
 
+
+    @Override
+    public void updateLocale() {
+        setTitle(LocaleManager.getInstance().getString("robot.position.title"));
+    }
+
     /**
      * Показывает координаты
      * @param x
      * @param y
      */
     private void updateText(double x, double y) {
-        textArea.setText(String.format("Координаты робота:\nX: %.2f\nY: %.2f", x, y));
+        textArea.setText(String.format(LocaleManager.getInstance().getString("robot.position.title") + "\nX: %.2f\nY: %.2f", x, y));
     }
 
     /**

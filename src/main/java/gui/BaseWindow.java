@@ -1,7 +1,8 @@
 package gui;
 
+import localization.LocaleChangeListener;
 import state.WindowAction;
-
+import localization.LocaleManager;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,13 +14,22 @@ import static java.awt.Frame.NORMAL;
  * Абстрактный класс, который реализует методы: saveWindowState, loadWindowSave интерфейса WindowAction, избавляясь от дублирования кода в
  * классах LogWindow, GameWindow, RobotPositionWindow
  */
-public abstract class BaseWindow extends JInternalFrame implements WindowAction {
+public abstract class BaseWindow extends JInternalFrame implements WindowAction, LocaleChangeListener {
     public BaseWindow(String title, int width, int height, int defaultX, int defaultY) {
         super(title, true, true, true, true);
         setSize(width, height);
         setLocation(defaultX, defaultY);
         setVisible(true);
+        LocaleManager.getInstance().addListener(this);
     }
+
+    public abstract void updateLocale();
+
+    @Override
+    public void onLocaleChanged() {
+        updateLocale();
+    }
+
 
     /**
      * Сохраняет текущее состояние окна
