@@ -6,9 +6,6 @@ import java.util.Iterator;
 /**
  * Класс CircularBuffer представляет собой циклический (кольцевой) буфер фиксированного размера,
  * который позволяет эффективно хранить ограниченное количество элементов с заменой самых старых при переполнении.
- * <p>
- * Потокобезопасен: все методы синхронизированы.
- *
  * @param <T> тип элементов, хранящихся в буфере
  */
 public class CircularBuffer<T> implements Iterable<T> {
@@ -20,7 +17,6 @@ public class CircularBuffer<T> implements Iterable<T> {
 
     /**
      * Создает новый циклический буфер заданной емкости.
-     *
      * @param capacity максимальное количество элементов, которое буфер может содержать
      */
     public CircularBuffer(int capacity) {
@@ -32,7 +28,6 @@ public class CircularBuffer<T> implements Iterable<T> {
      * Добавляет элемент в буфер.
      * Если буфер не заполнен, элемент добавляется в конец.
      * Если буфер заполнен, самый старый элемент перезаписывается новым.
-     *
      * @param item элемент для добавления
      */
     public synchronized void add(T item) {
@@ -63,7 +58,6 @@ public class CircularBuffer<T> implements Iterable<T> {
 
     /**
      * Возвращает текущее количество элементов в буфере.
-     *
      * @return количество элементов в буфере
      */
     public synchronized int size() {
@@ -73,7 +67,6 @@ public class CircularBuffer<T> implements Iterable<T> {
     /**
      * Возвращает подмножество элементов буфера в виде Iterable,
      * начиная с индекса startFrom и максимум count элементов.
-     *
      * @param startFrom индекс первого элемента для выборки (от 0 до size-1)
      * @param count максимальное количество элементов для выборки
      * @return Iterable с элементами, или пустой список, если startFrom вне диапазона
@@ -91,8 +84,6 @@ public class CircularBuffer<T> implements Iterable<T> {
 
     /**
      * Возвращает итератор для обхода всех элементов буфера от самого старого к новому.
-     * Итератор потокобезопасен относительно изменений во время итерации.
-     *
      * @return итератор по элементам буфера
      */
     @Override

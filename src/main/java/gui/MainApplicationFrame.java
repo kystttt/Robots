@@ -70,6 +70,9 @@ public class MainApplicationFrame extends JFrame implements WindowAction, Locale
     }
 
 
+    /**
+     * Локализует кнопки диалогового меню
+     */
     private void localizeOptionPaneButtons() {
         LocaleManager lm = LocaleManager.getInstance();
         UIManager.put("OptionPane.yesButtonText", lm.getString("dialog.yes"));
@@ -88,6 +91,9 @@ public class MainApplicationFrame extends JFrame implements WindowAction, Locale
     }
 
 
+    /**
+     * Реализует интерфейс onLocalChanged
+     */
     @Override
     public void onLocaleChanged() {
         localizeOptionPaneButtons();
