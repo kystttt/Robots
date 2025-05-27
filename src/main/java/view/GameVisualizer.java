@@ -1,6 +1,6 @@
-package game;
+package view;
 
-import game.RobotModel;
+import model.RobotModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +17,6 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         this.model = model;
         model.addPropertyChangeListener(this);
         setDoubleBuffered(true);
-
-
     }
 
     /**

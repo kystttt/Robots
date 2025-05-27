@@ -1,6 +1,6 @@
 package gui;
 
-import game.RobotModel;
+import model.RobotModel;
 import localization.LocaleManager;
 import state.WindowAction;
 
@@ -15,21 +15,30 @@ import java.beans.PropertyChangeListener;
  */
 public class RobotPositionWindow extends BaseWindow implements WindowAction, PropertyChangeListener {
     private final JTextArea textArea;
+    private double lastX;
+    private double lastY;
 
     public RobotPositionWindow(RobotModel model) {
-        super(LocaleManager.getInstance().getString("robot.position.title"), 300, 200, 100, 100);
+        super(LocaleManager.getInstance().getString("robot.position.format"), 300, 200, 100, 100);
         textArea = new JTextArea();
         textArea.setEditable(false);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
         pack();
         model.addPropertyChangeListener(this);
         updateText(model.getX(), model.getY());
+        updateText(model.getX(), model.getY());
+        lastX = model.getX();
+        lastY = model.getY();
     }
 
 
     @Override
     public void updateLocale() {
-        setTitle(LocaleManager.getInstance().getString("robot.position.title"));
+        setTitle(LocaleManager.getInstance().getString("robot.position.format"));
+        updateText(lastX, lastY);
+        invalidate();
+        validate();
+        repaint();
     }
 
     /**
@@ -38,7 +47,7 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
      * @param y
      */
     private void updateText(double x, double y) {
-        textArea.setText(String.format(LocaleManager.getInstance().getString("robot.position.title") + "\nX: %.2f\nY: %.2f", x, y));
+        textArea.setText(String.format(LocaleManager.getInstance().getString("robot.position.format") + "\nX: %.2f\nY: %.2f", x, y));
     }
 
     /**
@@ -51,7 +60,9 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
     public void propertyChange(PropertyChangeEvent evt) {
         if ("position".equals(evt.getPropertyName())) {
             double[] newPos = (double[]) evt.getNewValue();
-            updateText(newPos[0], newPos[1]);
+            lastX = newPos[0];
+            lastY = newPos[1];
+            updateText(lastX, lastY);
         }
     }
 

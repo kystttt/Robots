@@ -87,6 +87,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction, Locale
         repaint();
     }
 
+
     @Override
     public void onLocaleChanged() {
         localizeOptionPaneButtons();
@@ -95,6 +96,15 @@ public class MainApplicationFrame extends JFrame implements WindowAction, Locale
         gameWindow.updateLocale();
         robotPositionWindow.updateLocale();
         SwingUtilities.updateComponentTreeUI(this);
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            SwingUtilities.updateComponentTreeUI(frame);
+            frame.invalidate();
+            frame.validate();
+            frame.repaint();
+        }
+        invalidate();
+        validate();
+        repaint();
     }
 
     @Override
@@ -147,7 +157,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction, Locale
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug(LocaleManager.getInstance().getString("logger.protocol"));
         return logWindow;
     }
 

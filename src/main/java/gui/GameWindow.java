@@ -1,8 +1,8 @@
 package gui;
 
-import game.GameController;
-import game.GameVisualizer;
-import game.RobotModel;
+import Controller.GameController;
+import view.GameVisualizer;
+import model.RobotModel;
 import localization.LocaleManager;
 import state.WindowAction;
 
@@ -28,6 +28,7 @@ public class GameWindow extends BaseWindow implements WindowAction {
     @Override
     public void updateLocale() {
         setTitle(LocaleManager.getInstance().getString("game.title"));
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
     @Override

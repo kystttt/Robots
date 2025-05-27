@@ -1,8 +1,12 @@
-package game;
+package Controller;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import log.Logger;
+import localization.LocaleManager;
+import model.RobotModel;
+import view.GameVisualizer;
 
 /**
  * Контроллер игры, обрабатывающий клики мыши по игровому полю,
@@ -20,6 +24,7 @@ public class GameController extends MouseAdapter {
         timer.start();
     }
 
+
     /**
      * Обрабатывает щелчок мыши и устанавливает координаты новой
      * цели для робота
@@ -28,5 +33,7 @@ public class GameController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         model.setTarget(e.getX(), e.getY());
+        Logger.debug(String.format(
+                LocaleManager.getInstance().getString("coordinates.changed") + " X:%d, Y:%d" , e.getX(), e.getY()));
     }
 }

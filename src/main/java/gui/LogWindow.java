@@ -32,6 +32,10 @@ public class LogWindow extends BaseWindow implements LogChangeListener, WindowAc
     @Override
     public void updateLocale() {
         setTitle(LocaleManager.getInstance().getString("log.title"));
+        updateLogContent();
+        invalidate();
+        validate();
+        repaint();
     }
 
     private void updateLogContent() {
