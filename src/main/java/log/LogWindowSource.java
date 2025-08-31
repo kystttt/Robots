@@ -14,13 +14,13 @@ import java.util.WeakHashMap;
  */
 public class LogWindowSource
 {
-    private ArrayList<LogEntry> m_messages;
+    private final CircularBuffer<LogEntry> m_messages;
     private final Set<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
-        m_messages = new ArrayList<LogEntry>(iQueueLength);
+        m_messages = new CircularBuffer<>(iQueueLength);
         m_listeners = Collections.newSetFromMap(new WeakHashMap<>());
     }
     
@@ -76,7 +76,7 @@ public class LogWindowSource
             return Collections.emptyList();
         }
         int indexTo = Math.min(startFrom + count, m_messages.size());
-        return m_messages.subList(startFrom, indexTo);
+        return m_messages.getRange(startFrom, indexTo);
     }
 
     public Iterable<LogEntry> all()

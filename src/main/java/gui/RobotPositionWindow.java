@@ -1,6 +1,6 @@
 package gui;
 
-import game.RobotModel;
+import model.RobotModel;
 import state.WindowAction;
 
 import javax.swing.*;

@@ -1,5 +1,8 @@
 package game;
 
+import log.Logger;
+import model.RobotModel;
+
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,5 +31,6 @@ public class GameController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         model.setTarget(e.getX(), e.getY());
+        Logger.debug("Координаты цели изменились - " + "X: "+ e.getX() + ", Y: " + e.getY());
     }
 }

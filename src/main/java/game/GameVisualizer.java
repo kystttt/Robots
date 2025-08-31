@@ -1,6 +1,6 @@
 package game;
 
-import game.RobotModel;
+import model.RobotModel;
 
 import javax.swing.*;
 import java.awt.*;
