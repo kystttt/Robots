@@ -6,24 +6,28 @@ import java.util.ArrayList;
 import java.util.WeakHashMap;
 
 /**
- * Что починить:
- * 2. Этот класс хранит активные сообщения лога, но в такой реализации он 
- * их лишь накапливает. Надо же, чтобы количество сообщений в логе было ограничено 
- * величиной m_iQueueLength (т.е. реально нужна очередь сообщений 
- * ограниченного размера) 
+ * Источник сообщений для окна логов, хранит сообщения в кольцевом буфере фиксированного размера
+ * Уведомляет зарегестрированных пользователей о новых сообщениях
  */
 public class LogWindowSource
 {
     private final CircularBuffer<LogEntry> m_messages;
     private final Set<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
-    
+
+    /**
+     * Создает новый источник лога с указанной емкостью
+     * @param iQueueLength
+     */
     public LogWindowSource(int iQueueLength) 
     {
         m_messages = new CircularBuffer<>(iQueueLength);
         m_listeners = Collections.newSetFromMap(new WeakHashMap<>());
     }
-    
+
+    /**
+     * Регистрирует слушателя
+     */
     public void registerListener(LogChangeListener listener)
     {
         synchronized(m_listeners)
@@ -32,7 +36,10 @@ public class LogWindowSource
             m_activeListeners = null;
         }
     }
-    
+
+    /**
+     * Отменяет регистрацию слушателя
+     */
     public void unregisterListener(LogChangeListener listener)
     {
         synchronized(m_listeners)
@@ -41,7 +48,12 @@ public class LogWindowSource
             m_activeListeners = null;
         }
     }
-    
+
+    /**
+     * Добавляет сообщение в лог и уведомляет слушателей
+     * @param logLevel
+     * @param strMessage
+     */
     public void append(LogLevel logLevel, String strMessage)
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
@@ -63,7 +75,11 @@ public class LogWindowSource
             listener.onLogChanged();
         }
     }
-    
+
+    /**
+     * Показывает размер лога
+     * @return
+     */
     public int size()
     {
         return m_messages.size();
@@ -79,6 +95,9 @@ public class LogWindowSource
         return m_messages.getRange(startFrom, indexTo);
     }
 
+    /**
+     * Показывает все сообщения в логе
+     */
     public Iterable<LogEntry> all()
     {
         return m_messages;
