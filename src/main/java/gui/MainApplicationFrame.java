@@ -9,10 +9,12 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.*;
 
+import localization.LocaleManager;
 import log.Logger;
 import state.WindowAction;
 import state.WindowSaver;
@@ -69,11 +71,12 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     @Override
     public Map<String, Integer> saveWindowState() {
         Map<String, Integer> state = new HashMap<>();
-        state.put("x", getLocation().x);
+        state.put("x", (getLocation().x));
         state.put("y", getLocation().y);
         state.put("width", getWidth());
         state.put("height", getHeight());
         state.put("state", getExtendedState());
+        state.put("locale", LocaleManager.getInstance().getCurrentLocale().getLanguage().equals("ru") ? 0 : 1);
         return state;
     }
 
@@ -95,6 +98,9 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
             if (state != null) {
                 setExtendedState(state);
             }
+            int intLocale = params.getOrDefault("locale", 0);
+            Locale newLoc = (intLocale == 0) ? Locale.of("ru") : Locale.of("en");
+            LocaleManager.getInstance().setCurrentLocale(newLoc);
         }
     }
 
@@ -116,7 +122,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug(LocaleManager.getInstance().getString("create.log.window"));
         return logWindow;
     }
 
@@ -130,20 +136,21 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         menuBar.add(generateLookAndFeelMenu());
         menuBar.add(generateTestMenu());
         menuBar.add(generateDocumentMenu());
+        menuBar.add(switchLanguageMenu());
         return menuBar;
     }
 
     private JMenu generateLookAndFeelMenu() {
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+        JMenu lookAndFeelMenu = new JMenu(LocaleManager.getInstance().getString("look.feel.menu"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
+        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(LocaleManager.getInstance().getString("title.look.feel.menu"));
         lookAndFeelMenu.add(createSystemLookAndFeelMenuButton());
         lookAndFeelMenu.add(createCrossPlatformLookAndFeelMenuButton());
         return lookAndFeelMenu;
     }
 
     private JMenuItem createSystemLookAndFeelMenuButton() {
-        JMenuItem systemLookAndFeelMenu = new JMenuItem("Системная схема", KeyEvent.VK_S);
+        JMenuItem systemLookAndFeelMenu = new JMenuItem(LocaleManager.getInstance().getString("create.look.menu1"), KeyEvent.VK_S);
         systemLookAndFeelMenu.addActionListener(event -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
@@ -152,7 +159,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createCrossPlatformLookAndFeelMenuButton() {
-        JMenuItem crossplatformLookAndMenuButton = new JMenuItem("Универсальная схема", KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndMenuButton = new JMenuItem(LocaleManager.getInstance().getString("create.look.menu2"), KeyEvent.VK_U);
         crossplatformLookAndMenuButton.addActionListener(event -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
@@ -161,16 +168,16 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenu generateTestMenu() {
-        JMenu testMenu = new JMenu("Тесты");
+        JMenu testMenu = new JMenu(LocaleManager.getInstance().getString("menu.log"));
         testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
+        testMenu.getAccessibleContext().setAccessibleDescription(LocaleManager.getInstance().getString("title.log"));
         testMenu.add(createAddLogMessageButton());
         return testMenu;
     }
 
     private JMenuItem createAddLogMessageButton() {
-        JMenuItem addLogMessageButton = new JMenuItem("Сообщение в лог", KeyEvent.VK_L);
-        addLogMessageButton.addActionListener(event -> Logger.debug("Новая строка"));
+        JMenuItem addLogMessageButton = new JMenuItem(LocaleManager.getInstance().getString("button1.log"), KeyEvent.VK_L);
+        addLogMessageButton.addActionListener(event -> Logger.debug(LocaleManager.getInstance().getString("button1.log.print")));
         return addLogMessageButton;
     }
 
@@ -184,14 +191,47 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenu generateDocumentMenu() {
-        JMenu menu = new JMenu("Приложение");
+        JMenu menu = new JMenu(LocaleManager.getInstance().getString("menu.file"));
         menu.setMnemonic(KeyEvent.VK_D);
         menu.add(createQuitButton());
         return menu;
     }
 
+    private JMenu switchLanguageMenu(){
+        JMenu switchMenu = new JMenu(LocaleManager.getInstance().getString("menu.language"));
+        switchMenu.setMnemonic(KeyEvent.VK_L);
+        switchMenu.add(switchLanguageButtonRu());
+        switchMenu.add(switchLanguageButtonEn());
+        return switchMenu;
+    }
+    /**
+     * Кнопка переключения локали на Ru
+     */
+    private JMenuItem switchLanguageButtonRu(){
+        JMenuItem languageRu = new JMenuItem("Русский");
+        languageRu.addActionListener(e -> switchLanguage(Locale.of("ru")));
+        return languageRu;
+    }
+
+    /**
+     * Кнопка переключения локали на En
+     */
+    private JMenuItem switchLanguageButtonEn(){
+        JMenuItem languageEn = new JMenuItem("English");
+        languageEn.addActionListener(e -> switchLanguage(Locale.of("en")));
+        return languageEn;
+    }
+
+    private void switchLanguage(Locale locale) {
+        LocaleManager.getInstance().setCurrentLocale(locale);
+        UIManager.put("OptionPane.yesButtonText", LocaleManager.getInstance().getString("yes"));
+        UIManager.put("OptionPane.noButtonText", LocaleManager.getInstance().getString("no"));
+        setJMenuBar(createMenuBar());
+        revalidate();
+        repaint();
+    }
     private JMenuItem createQuitButton() {
-        JMenuItem menuItem = new JMenuItem("Выход");
+        JMenuItem menuItem = new JMenuItem(LocaleManager.getInstance().getString("menu.exit"));
         menuItem.setMnemonic(KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.setActionCommand("quit");
@@ -202,8 +242,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     private void quit() {
         int response = JOptionPane.showConfirmDialog(
                 this,
-                "Вы уверены, что хотите выйти?",
-                "Подтвердите выход",
+                LocaleManager.getInstance().getString("menu.exit.confirm"),
+                LocaleManager.getInstance().getString("title.exit.confirm"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );

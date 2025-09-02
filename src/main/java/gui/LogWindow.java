@@ -1,5 +1,6 @@
 package gui;
 
+import localization.LocaleManager;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
@@ -8,13 +9,17 @@ import state.WindowAction;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.EventQueue;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class LogWindow extends BaseWindow implements LogChangeListener, WindowAction {
+public class LogWindow extends BaseWindow implements LogChangeListener, WindowAction, PropertyChangeListener {
     private final LogWindowSource m_logSource;
     private final TextArea m_logContent;
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", 300, 800, 10, 10);
+        super(LocaleManager.getInstance().getString("log.title"), 300, 800, 10, 10);
+        addPropertyChangeListener(this);
+        LocaleManager.getInstance().addPropertyChangeListener(this);
         m_logSource = logSource;
         m_logSource.registerListener(this);
 
@@ -45,5 +50,12 @@ public class LogWindow extends BaseWindow implements LogChangeListener, WindowAc
     @Override
     public String getNameOfWindow() {
         return "LogWindow";
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("locale".equals(evt.getPropertyName())) {
+            setTitle(LocaleManager.getInstance().getString("log.title"));
+        }
     }
 }

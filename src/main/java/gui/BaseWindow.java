@@ -1,10 +1,13 @@
 package gui;
 
+import localization.LocaleManager;
 import state.WindowAction;
 
 import javax.swing.*;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.spi.LocaleNameProvider;
 
 import static java.awt.Frame.ICONIFIED;
 import static java.awt.Frame.NORMAL;
@@ -33,6 +36,7 @@ public abstract class BaseWindow extends JInternalFrame implements WindowAction 
         state.put("width", getWidth());
         state.put("height", getHeight());
         state.put("state", isIcon() ? ICONIFIED : NORMAL);
+        state.put("locale", LocaleManager.getInstance().getCurrentLocale().getLanguage().equals("ru") ? 0 : 1);
         return state;
     }
 
@@ -55,6 +59,9 @@ public abstract class BaseWindow extends JInternalFrame implements WindowAction 
                     e.printStackTrace();
                 }
             }
+            int intLocale = params.getOrDefault("locale", 0);
+            Locale newLoc = (intLocale == 0) ? Locale.of("ru") : Locale.of("en");
+            LocaleManager.getInstance().setCurrentLocale(newLoc);
         }
     }
 }

@@ -1,5 +1,6 @@
 package game;
 
+import localization.LocaleManager;
 import log.Logger;
 import model.RobotModel;
 
@@ -31,6 +32,7 @@ public class GameController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         model.setTarget(e.getX(), e.getY());
-        Logger.debug("Координаты цели изменились - " + "X: "+ e.getX() + ", Y: " + e.getY());
+        Logger.debug(LocaleManager.getInstance().getString("cord.chan") +
+                " - " + "X: "+ e.getX() + ", Y: " + e.getY());
     }
 }

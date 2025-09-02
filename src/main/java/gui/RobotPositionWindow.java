@@ -1,5 +1,6 @@
 package gui;
 
+import localization.LocaleManager;
 import model.RobotModel;
 import state.WindowAction;
 
@@ -16,7 +17,9 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
     private final JTextArea textArea;
 
     public RobotPositionWindow(RobotModel model) {
-        super("Информация", 300, 200, 100, 100);
+        super(LocaleManager.getInstance().getString("menu.robot"), 300, 200, 100, 100);
+        addPropertyChangeListener(this);
+        LocaleManager.getInstance().addPropertyChangeListener(this);
         textArea = new JTextArea();
         textArea.setEditable(false);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
@@ -31,7 +34,9 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
      * @param y
      */
     private void updateText(double x, double y) {
-        textArea.setText(String.format("Координаты робота:\nX: %.2f\nY: %.2f", x, y));
+        textArea.setText(LocaleManager.getInstance().getString("robot.info") + ":" +
+                "\nX:" +  String.format("%.2f", x) +
+                "\nY:" + String.format("%.2f", y));
     }
 
     /**
@@ -42,6 +47,10 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        if ("locale".equals(evt.getPropertyName())) {
+            setTitle(LocaleManager.getInstance().getString("menu.robot"));
+            updateText(textArea.getX(), textArea.getY());
+        }
         if ("position".equals(evt.getPropertyName())) {
             double[] newPos = (double[]) evt.getNewValue();
             updateText(newPos[0], newPos[1]);
