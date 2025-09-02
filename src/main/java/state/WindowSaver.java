@@ -22,7 +22,7 @@ public class WindowSaver {
     public WindowSaver(Map<String, Integer> windowParams, Set<String> windowsNames) {
         this.windowParams = windowParams;
         this.windowsNames = windowsNames;
-        this.configFilePath = System.getProperty("user.home") + "/sevostianov/state.cfg";
+        this.configFilePath = System.getProperty("user.home") + File.separator + "sevostianov" + File.separator + "state.cfg";
     }
 
     public void registerWindow(String windowName) {
@@ -59,7 +59,7 @@ public class WindowSaver {
      * не делает
      */
     public void saveToFile() throws IOException {
-        File configDir = new File(System.getProperty("user.home") + "/sevostianov/");
+        File configDir = new File(System.getProperty("user.home") + File.separator + "sevostianov");
         if (!configDir.exists()) {
             configDir.mkdirs();
         }
