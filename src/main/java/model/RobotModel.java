@@ -42,7 +42,7 @@ public class RobotModel {
         if (Math.abs(angleDiff) > 0.1) {
             direction += Math.signum(angleDiff) * 0.05;
         } else {
-            double speed = Math.min(2.0, distance);
+            double speed = Math.min(8.0, distance);
             x += speed * Math.cos(direction);
             y += speed * Math.sin(direction);
         }
