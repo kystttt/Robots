@@ -32,7 +32,7 @@ public class GameController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         model.setTarget(e.getX(), e.getY());
-        Logger.debug(LocaleManager.getInstance().getString("cord.chan") +
+        Logger.debug(LocaleManager.getInstance().getString("log.window.changed") +
                 " - " + "X: "+ e.getX() + ", Y: " + e.getY());
     }
 }

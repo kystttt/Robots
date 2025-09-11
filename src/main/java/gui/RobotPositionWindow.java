@@ -17,7 +17,7 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
     private final JTextArea textArea;
 
     public RobotPositionWindow(RobotModel model) {
-        super(LocaleManager.getInstance().getString("menu.robot"), 300, 200, 100, 100);
+        super(LocaleManager.getInstance().getString("info.window.title"), 300, 200, 100, 100);
         addPropertyChangeListener(this);
         LocaleManager.getInstance().addPropertyChangeListener(this);
         textArea = new JTextArea();
@@ -34,7 +34,7 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
      * @param y
      */
     private void updateText(double x, double y) {
-        textArea.setText(LocaleManager.getInstance().getString("robot.info") + ":" +
+        textArea.setText(LocaleManager.getInstance().getString("robot.window.info") + ":" +
                 "\nX:" +  String.format("%.2f", x) +
                 "\nY:" + String.format("%.2f", y));
     }
@@ -48,7 +48,7 @@ public class RobotPositionWindow extends BaseWindow implements WindowAction, Pro
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("locale".equals(evt.getPropertyName())) {
-            setTitle(LocaleManager.getInstance().getString("menu.robot"));
+            setTitle(LocaleManager.getInstance().getString("info.window.title"));
             updateText(textArea.getX(), textArea.getY());
         }
         if ("position".equals(evt.getPropertyName())) {

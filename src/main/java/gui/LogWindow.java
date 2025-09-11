@@ -17,7 +17,7 @@ public class LogWindow extends BaseWindow implements LogChangeListener, WindowAc
     private final TextArea m_logContent;
 
     public LogWindow(LogWindowSource logSource) {
-        super(LocaleManager.getInstance().getString("log.title"), 300, 800, 10, 10);
+        super(LocaleManager.getInstance().getString("log.window.title"), 300, 800, 10, 10);
         addPropertyChangeListener(this);
         LocaleManager.getInstance().addPropertyChangeListener(this);
         m_logSource = logSource;
@@ -55,7 +55,7 @@ public class LogWindow extends BaseWindow implements LogChangeListener, WindowAc
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("locale".equals(evt.getPropertyName())) {
-            setTitle(LocaleManager.getInstance().getString("log.title"));
+            setTitle(LocaleManager.getInstance().getString("log.window.title"));
         }
     }
 }

@@ -122,7 +122,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug(LocaleManager.getInstance().getString("create.log.window"));
+        Logger.debug(LocaleManager.getInstance().getString("log.window.first.text"));
         return logWindow;
     }
 
@@ -141,7 +141,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenu generateLookAndFeelMenu() {
-        JMenu lookAndFeelMenu = new JMenu(LocaleManager.getInstance().getString("look.feel.menu"));
+        JMenu lookAndFeelMenu = new JMenu(LocaleManager.getInstance().getString("button1"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(LocaleManager.getInstance().getString("title.look.feel.menu"));
         lookAndFeelMenu.add(createSystemLookAndFeelMenuButton());
@@ -150,7 +150,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createSystemLookAndFeelMenuButton() {
-        JMenuItem systemLookAndFeelMenu = new JMenuItem(LocaleManager.getInstance().getString("create.look.menu1"), KeyEvent.VK_S);
+        JMenuItem systemLookAndFeelMenu = new JMenuItem(LocaleManager.getInstance().getString("button1.first"), KeyEvent.VK_S);
         systemLookAndFeelMenu.addActionListener(event -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
@@ -159,7 +159,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createCrossPlatformLookAndFeelMenuButton() {
-        JMenuItem crossplatformLookAndMenuButton = new JMenuItem(LocaleManager.getInstance().getString("create.look.menu2"), KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndMenuButton = new JMenuItem(LocaleManager.getInstance().getString("button1.second"), KeyEvent.VK_U);
         crossplatformLookAndMenuButton.addActionListener(event -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
@@ -168,7 +168,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenu generateTestMenu() {
-        JMenu testMenu = new JMenu(LocaleManager.getInstance().getString("menu.log"));
+        JMenu testMenu = new JMenu(LocaleManager.getInstance().getString("button2"));
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(LocaleManager.getInstance().getString("title.log"));
         testMenu.add(createAddLogMessageButton());
@@ -176,8 +176,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenuItem createAddLogMessageButton() {
-        JMenuItem addLogMessageButton = new JMenuItem(LocaleManager.getInstance().getString("button1.log"), KeyEvent.VK_L);
-        addLogMessageButton.addActionListener(event -> Logger.debug(LocaleManager.getInstance().getString("button1.log.print")));
+        JMenuItem addLogMessageButton = new JMenuItem(LocaleManager.getInstance().getString("button2.first"), KeyEvent.VK_L);
+        addLogMessageButton.addActionListener(event -> Logger.debug(LocaleManager.getInstance().getString("log.window.print")));
         return addLogMessageButton;
     }
 
@@ -191,14 +191,14 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     }
 
     private JMenu generateDocumentMenu() {
-        JMenu menu = new JMenu(LocaleManager.getInstance().getString("menu.file"));
+        JMenu menu = new JMenu(LocaleManager.getInstance().getString("button3"));
         menu.setMnemonic(KeyEvent.VK_D);
         menu.add(createQuitButton());
         return menu;
     }
 
     private JMenu switchLanguageMenu(){
-        JMenu switchMenu = new JMenu(LocaleManager.getInstance().getString("menu.language"));
+        JMenu switchMenu = new JMenu(LocaleManager.getInstance().getString("button4"));
         switchMenu.setMnemonic(KeyEvent.VK_L);
         switchMenu.add(switchLanguageButtonRu());
         switchMenu.add(switchLanguageButtonEn());
@@ -222,6 +222,10 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         return languageEn;
     }
 
+    /**
+     * Перерисовывает наше окошко после смены лангуаге))) и меняет локаль
+     * @param locale новая локаль
+     */
     private void switchLanguage(Locale locale) {
         LocaleManager.getInstance().setCurrentLocale(locale);
         UIManager.put("OptionPane.yesButtonText", LocaleManager.getInstance().getString("yes"));
@@ -230,8 +234,9 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         revalidate();
         repaint();
     }
+
     private JMenuItem createQuitButton() {
-        JMenuItem menuItem = new JMenuItem(LocaleManager.getInstance().getString("menu.exit"));
+        JMenuItem menuItem = new JMenuItem(LocaleManager.getInstance().getString("button3.first"));
         menuItem.setMnemonic(KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.setActionCommand("quit");
@@ -242,8 +247,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     private void quit() {
         int response = JOptionPane.showConfirmDialog(
                 this,
-                LocaleManager.getInstance().getString("menu.exit.confirm"),
-                LocaleManager.getInstance().getString("title.exit.confirm"),
+                LocaleManager.getInstance().getString("exit.window.title"),
+                LocaleManager.getInstance().getString("exit.confirm"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );

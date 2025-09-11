@@ -16,7 +16,7 @@ public class GameWindow extends BaseWindow implements WindowAction, PropertyChan
     public final RobotModel model;
 
     public GameWindow() {
-        super(LocaleManager.getInstance().getString("game.title"), 400, 400, 50, 50);
+        super(LocaleManager.getInstance().getString("game.window"), 400, 400, 50, 50);
         addPropertyChangeListener(this);
         LocaleManager.getInstance().addPropertyChangeListener(this);
         model = new RobotModel();
@@ -41,7 +41,7 @@ public class GameWindow extends BaseWindow implements WindowAction, PropertyChan
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("locale".equals(evt.getPropertyName())) {
-            setTitle(LocaleManager.getInstance().getString("game.title"));
+            setTitle(LocaleManager.getInstance().getString("game.window"));
         }
     }
 }
