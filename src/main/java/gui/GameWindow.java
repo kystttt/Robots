@@ -30,6 +30,13 @@ public class GameWindow extends BaseWindow implements WindowAction, PropertyChan
         LocaleManager.getInstance().addPropertyChangeListener(this);
     }
 
+    /**
+     * Возвращает обновленный функционал jar для робота
+     */
+    public GameVisualizer getVisualizer() {
+        return m_visualizer;
+    }
+
     @Override
     public String getNameOfWindow() {
         return "GameWindow";

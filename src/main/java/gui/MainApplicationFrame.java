@@ -6,16 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-
+import game.RobotLoader;
 import javax.swing.*;
 
 import localization.LocaleManager;
 import log.Logger;
+import model.ExternalModelRobot;
+import model.ExternalRobotGui;
+import model.RobotModel;
 import state.WindowAction;
 import state.WindowSaver;
 
@@ -25,6 +29,8 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     private LogWindow logWindow;
     private GameWindow gameWindow;
     private RobotPositionWindow robotPositionWindow;
+    private final RobotLoader robotLoader = new RobotLoader();
+    private final RobotModel sharedRobotModel = new RobotModel();
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -137,6 +143,7 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         menuBar.add(generateTestMenu());
         menuBar.add(generateDocumentMenu());
         menuBar.add(switchLanguageMenu());
+        menuBar.add(createRobotMenu());
         return menuBar;
     }
 
@@ -147,6 +154,60 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         lookAndFeelMenu.add(createSystemLookAndFeelMenuButton());
         lookAndFeelMenu.add(createCrossPlatformLookAndFeelMenuButton());
         return lookAndFeelMenu;
+    }
+
+    /**
+     * Создает меню загрузки роботов
+     */
+    private JMenu createRobotMenu(){
+        JMenu robotMenu = new JMenu(LocaleManager.getInstance().getString("button5"));
+        JMenuItem loadRobotItem = new JMenuItem(LocaleManager.getInstance().getString("button5.first"));
+        loadRobotItem.addActionListener(e->loadExternalRobot());
+        robotMenu.add(loadRobotItem);
+        return robotMenu;
+    }
+
+    /**
+     * Загружает внешнюю реализацию робота
+     */
+    private void loadExternalRobot(){
+        JFileChooser chooser = robotLoader.createJarFileChooser(
+                LocaleManager.getInstance().getString("button5.second")
+        );
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try{
+                File file = chooser.getSelectedFile();
+                ExternalModelRobot robotModel = robotLoader.loadRobotFromJarModel(file, "model.CustomRobot");
+                ExternalRobotGui robotGui = robotLoader.loadRobotFromJarGui(file, "model.CustomRobot");
+                sharedRobotModel.setExternalModelRobot(robotModel);
+                gameWindow.getVisualizer().setExternalRobot(robotGui);
+                showSucсessMessage();
+            } catch (Exception ex){
+                Logger.error("Failed to load: " + ex.getMessage());
+                showErrorMessage();
+            }
+        }
+        repaint();
+    }
+
+    /**
+     * Сообщение об успешной загрузке
+     */
+    private void showSucсessMessage(){
+        JOptionPane.showMessageDialog(this,
+                LocaleManager.getInstance().getString("load.success"),
+                LocaleManager.getInstance().getString("load.loading"),
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Сообщение об ошибке при загрузке
+     */
+    private void showErrorMessage(){
+        JOptionPane.showMessageDialog(this,
+                LocaleManager.getInstance().getString("load.error"),
+                LocaleManager.getInstance().getString("load.loading"),
+                JOptionPane.ERROR_MESSAGE);
     }
 
     private JMenuItem createSystemLookAndFeelMenuButton() {

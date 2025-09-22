@@ -6,13 +6,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import model.ExternalRobotGui;
 
 /**
  * Рисует робота и точку, после клика мышью
  */
 public class GameVisualizer extends JPanel implements PropertyChangeListener {
     private final RobotModel model;
+    private ExternalRobotGui externalRobotGui;
 
+    /**
+     *Визуализирует игру и добавляет обработчик кликов для установки цели
+     * @param model
+     */
     public GameVisualizer(RobotModel model) {
         this.model = model;
         model.addPropertyChangeListener(this);
@@ -22,14 +28,23 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
     }
 
     /**
+     * Устанавливает обнову из jarника для робота
+     */
+    public void setExternalRobot(ExternalRobotGui externalRobotGui){
+        this.externalRobotGui =externalRobotGui;
+    }
+
+    /**
      * Рисует текущие координаты робота и точку цели
      * @param g the <code>Graphics</code> object to protect
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawRobot(g, model.getX(), model.getY(), model.getDirection());
-        drawTarget(g, model.getTargetX(), model.getTargetY());
+        Graphics2D g2d = (Graphics2D) g;
+
+        drawRobot(g2d, (int) model.getX(), (int) model.getY(), model.getDirection());
+        drawTarget(g2d, (int) model.getTargetX(), (int) model.getTargetY());
     }
 
     /**
@@ -39,15 +54,19 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
      * @param y
      * @param direction
      */
-    private void drawRobot(Graphics g, double x, double y, double direction) {
-        Graphics2D g2d = (Graphics2D) g.create();
-        g2d.translate(x, y);
-        g2d.rotate(direction);
-        g2d.setColor(Color.BLACK);
-        g2d.fillOval(-20, -5, 40, 10);
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval(20 - 2, -2, 4, 4);
-        g2d.dispose();
+    private void drawRobot(Graphics2D g, int x, int y, double direction) {
+        if (externalRobotGui != null) {
+            externalRobotGui.drawRobot(g, x, y, direction);
+        } else{
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.translate(x, y);
+            g2d.rotate(direction);
+            g2d.setColor(Color.BLACK);
+            g2d.fillOval(-20, -5, 40, 10);
+            g2d.setColor(Color.WHITE);
+            g2d.fillOval(20 - 2, -2, 4, 4);
+            g2d.dispose();
+        }
     }
 
     /**

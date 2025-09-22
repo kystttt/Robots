@@ -7,6 +7,7 @@ import java.beans.PropertyChangeSupport;
  * Также реализует механизм оповещения слушателей об изменениях положения и цели.
  */
 public class RobotModel {
+    private ExternalModelRobot externalModelRobot;
     private double x = 100;
     private double y = 100;
     private double direction = 0;
@@ -22,6 +23,13 @@ public class RobotModel {
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Устанавливает функционал из jarника для робота
+     */
+    public void setExternalModelRobot(ExternalModelRobot externalModelRobot) {
+        this.externalModelRobot = externalModelRobot;
     }
 
     /**
