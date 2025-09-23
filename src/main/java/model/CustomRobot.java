@@ -3,6 +3,10 @@ package model;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
+
+/**
+ * Класс с роботом, который мы будем загружать из jar -файла
+ */
 public class CustomRobot implements ExternalModelRobot, ExternalRobotGui {
     @Override
     public double getMaxSpeed() { return 0.15; }
