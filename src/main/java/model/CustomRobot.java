@@ -11,15 +11,15 @@ public class CustomRobot implements ExternalModelRobot, ExternalRobotGui {
     public void drawRobot(Graphics2D g, int x, int y, double direction) {
         AffineTransform oldTransform = g.getTransform();
         g.rotate(direction, x, y);
-        g.setColor(new Color(255, 165, 0)); // Оранжевый
+        g.setColor(new Color(240, 165, 0)); // Оранжевый
         g.fillRect(x - 20, y - 10, 40, 20);
-        g.setColor(Color.RED);
+        g.setColor(Color.BLUE);
         g.fillOval(x + 15, y - 3, 6, 6);
         g.setColor(Color.BLACK);
-        g.fillOval(x - 18, y - 8, 6, 6);
-        g.fillOval(x - 18, y + 2, 6, 6);
-        g.fillOval(x + 12, y - 8, 6, 6);
-        g.fillOval(x + 12, y + 2, 6, 6);
+        g.fillOval(x - 22, y - 8, 12, 12);
+        g.fillOval(x - 22, y + 2, 12, 12);
+        g.fillOval(x + 15, y - 8, 12, 12);
+        g.fillOval(x + 15, y + 2, 12, 12);
         g.setTransform(oldTransform);
     }
 }
