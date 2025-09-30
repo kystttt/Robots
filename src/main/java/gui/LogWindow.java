@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogWindow extends BaseWindow implements LogChangeListener, WindowAction, PropertyChangeListener {
     private final LogWindowSource m_logSource;
@@ -35,8 +37,10 @@ public class LogWindow extends BaseWindow implements LogChangeListener, WindowAc
 
     private void updateLogContent() {
         StringBuilder content = new StringBuilder();
-        for (LogEntry entry : m_logSource.all()) {
-            content.append(entry.getMessage()).append("\n");
+        List<LogEntry> list = new ArrayList<>();
+        for (LogEntry e : m_logSource.all()) list.add(e);
+        for (int i = list.size() - 1; i >= 0; i--) {
+            content.append(list.get(i).getMessage()).append("\n");
         }
         m_logContent.setText(content.toString());
         m_logContent.invalidate();

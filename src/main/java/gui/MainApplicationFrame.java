@@ -30,7 +30,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
     private GameWindow gameWindow;
     private RobotPositionWindow robotPositionWindow;
     private final RobotLoader robotLoader = new RobotLoader();
-    private final RobotModel sharedRobotModel = new RobotModel();
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -177,10 +176,19 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try{
                 File file = chooser.getSelectedFile();
-                ExternalModelRobot robotModel = robotLoader.loadRobotFromJarModel(file, "model.CustomRobot");
-                ExternalRobotGui robotGui = robotLoader.loadRobotFromJarGui(file, "model.CustomRobot");
-                sharedRobotModel.setExternalModelRobot(robotModel);
+                ExternalModelRobot robotModel = robotLoader.loadRobotFromJarModel(file, "custom.CustomRobotModel");
+                ExternalRobotGui robotGui = robotLoader.loadRobotFromJarGui(file, "custom.CustomRobotView");
+                gameWindow.model.setExternalModelRobot(robotModel);
                 gameWindow.getVisualizer().setExternalRobot(robotGui);
+                System.out.println("Model class    : " + robotModel.getClass().getName());
+                var mcs = robotModel.getClass().getProtectionDomain().getCodeSource();
+                System.out.println("Model location : " + (mcs != null ? mcs.getLocation() : "unknown"));
+                System.out.println("Model CL       : " + robotModel.getClass().getClassLoader());
+
+                System.out.println("GUI class      : " + robotGui.getClass().getName());
+                var gcs = robotGui.getClass().getProtectionDomain().getCodeSource();
+                System.out.println("GUI location   : " + (gcs != null ? gcs.getLocation() : "unknown"));
+                System.out.println("GUI CL         : " + robotGui.getClass().getClassLoader());
                 showSucсessMessage();
             } catch (Exception ex){
                 Logger.error("Failed to load: " + ex.getMessage());

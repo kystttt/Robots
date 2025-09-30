@@ -43,6 +43,7 @@ public class CircularBuffer<T> implements Iterable<T> {
                 end = (end + 1) % capacity;
             } else {
                 elements[end] = element;
+                start = (start + 1) % capacity;
                 end = (end + 1) % capacity;
             }
         } finally {
