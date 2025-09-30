@@ -180,15 +180,6 @@ public class MainApplicationFrame extends JFrame implements WindowAction {
                 ExternalRobotGui robotGui = robotLoader.loadRobotFromJarGui(file, "custom.CustomRobotView");
                 gameWindow.model.setExternalModelRobot(robotModel);
                 gameWindow.getVisualizer().setExternalRobot(robotGui);
-                System.out.println("Model class    : " + robotModel.getClass().getName());
-                var mcs = robotModel.getClass().getProtectionDomain().getCodeSource();
-                System.out.println("Model location : " + (mcs != null ? mcs.getLocation() : "unknown"));
-                System.out.println("Model CL       : " + robotModel.getClass().getClassLoader());
-
-                System.out.println("GUI class      : " + robotGui.getClass().getName());
-                var gcs = robotGui.getClass().getProtectionDomain().getCodeSource();
-                System.out.println("GUI location   : " + (gcs != null ? gcs.getLocation() : "unknown"));
-                System.out.println("GUI CL         : " + robotGui.getClass().getClassLoader());
                 showSucсessMessage();
             } catch (Exception ex){
                 Logger.error("Failed to load: " + ex.getMessage());
